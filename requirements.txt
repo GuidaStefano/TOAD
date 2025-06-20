@@ -19,7 +19,7 @@ matplotlib==3.7.2
 mdurl==0.1.2
 mlxtend==0.22.0
 networkx==3.1
-numpy==1.25.1
+numpy
 openpyxl==3.1.2
 packaging==23.1
 pandas==2.0.3
