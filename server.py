@@ -23,23 +23,23 @@ def parse_repo_url(repo_url):
 
 def run_toad_task(task_id, input_csv_path):
     try:
-        result = subprocess.run(
-            [
-                "python", "pattern_detection.py"
-            ],
+        subprocess.run(
+            ["python3.8", "pattern_detection.py"],
             input=f"{input_csv_path}\n{OUTPUT_FOLDER}\ntask_{task_id}\n",
             text=True,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             check=True
         )
-
         RESULTS[task_id] = {
             "status": "completed",
             "output_file": os.path.join(OUTPUT_FOLDER, f"task_{task_id}.csv")
         }
     except subprocess.CalledProcessError as e:
-        RESULTS[task_id] = {"status": "error", "error": e.stderr}
+        RESULTS[task_id] = {
+            "status": "error",
+            "error": e.stderr
+        }
 
 @app.route('/run_toad', methods=['POST'])
 def run_toad():
@@ -65,7 +65,6 @@ def run_toad():
     thread = threading.Thread(target=run_toad_task, args=(task_id, input_csv_path))
     thread.start()
 
-    # Restituisci solo il task_id
     return jsonify({"task_id": task_id})
 
 @app.route('/get_result/<task_id>', methods=['GET'])
