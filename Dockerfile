@@ -8,6 +8,6 @@ RUN pip install --upgrade pip && \
     pip install -r requirements.txt && \
     pip install Flask
 
-EXPOSE 5000
+EXPOSE 5005
 
 CMD ["python", "server.py"]
