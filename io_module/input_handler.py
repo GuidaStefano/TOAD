@@ -22,9 +22,6 @@ def get_input_files():
         raise SystemExit(0)
     output_path = console.input('[bold green]Please enter the filename of the output file. Please do not include any extension, as it will be a csv file\n')
     with open(os.path.join(output_dir, output_path + ".csv"), "w") as file:
-        if not os.path.isfile(output_path + ".csv"):
-            console.print("[bold red]There was an error creating the output file")
-            raise SystemExit(0)
         dw = csv.DictWriter(
             file,
             delimiter=",",
