@@ -135,3 +135,6 @@ relations_mining
 
 input.csv
 output.csv
+
+csv
+logs
