@@ -36,11 +36,7 @@ def retrieve_geo_information(community: community.Community):
 def retrieve_country_name(community: community.Community):
     countries = []
 
-    globe = pd.DataFrame(
-        globe_data_reader.read_data(
-            "geodispersion/GLOBE-Phase-2-Aggregated-Societal-Culture-Data.xls"
-        )
-    )
+    globe = pd.DataFrame(globe_data_reader.read_data())
     globe_countries = globe["Country Name"].tolist()
 
     for member in community.data.members:

@@ -36,7 +36,7 @@ def analyze(request: AnalyzeRequest):
     })
 
     # Scrivi metadati iniziali in Redis per lo stato PENDING
-    redis = Redis(host="localhost", port=6379, db=0)
+    redis = Redis(host="redis", port=6379, db=0)
     meta_key = f"celery-task-meta-{task.id}"
     meta_payload = {
         "status": "PENDING",
@@ -74,7 +74,7 @@ def get_status(job_id: str):
 
     # Se è in PENDING ma Redis ha i metadati, leggili direttamente
     if res.status == "PENDING":
-        redis = Redis(host="localhost", port=6379, db=0)
+        redis = Redis(host="redis", port=6379, db=0)
         meta_key = f"celery-task-meta-{job_id}"
         raw = redis.get(meta_key)
         if raw:

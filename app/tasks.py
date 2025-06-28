@@ -14,8 +14,8 @@ import stat
 
 # === Configurazione di Celery con Redis come broker e backend ===
 app = Celery("tasks",
-             broker="redis://localhost:6379/0",
-             backend="redis://localhost:6379/0")
+             broker="redis://redis:6379/0",
+             backend="redis://redis:6379/0") 
 
 # === Mapping pattern name abbreviato ➜ nome completo ===
 PATTERN_DESCRIPTIONS = {

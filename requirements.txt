@@ -38,7 +38,7 @@ six==1.16.0
 smmap==5.0.0
 strsimpy==0.2.1
 threadpoolctl==3.2.0
-tzdata==2023.3
+tzdata
 urllib3==1.26.15
 xlrd==2.0.1
 fastapi==0.115.13

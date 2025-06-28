@@ -11,9 +11,7 @@ def compute_distances(community: community.Community):
     This method computes the values needed for the community geodispersion metric (i.e. geographical variance
     and cultural variance).
     """
-    globe = globe_data_reader.read_data(
-        "geodispersion\GLOBE-Phase-2-Aggregated-Societal-Culture-Data.xls"
-    )
+    globe = globe_data_reader.read_data()
     community.data.distances = compute_geographical_distances(community)
     geographical_variance = statistics.variance(community.data.distances)
     avg_geo_distance = statistics.mean(community.data.distances)
