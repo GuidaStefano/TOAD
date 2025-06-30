@@ -125,7 +125,56 @@ def read_metrics(metrics_path: Path) -> dict:
         return {"error": "metrics.json non trovato"}
     try:
         with open(metrics_path, "r") as f:
-            return json.load(f)
+            raw_metrics = json.load(f)
+
+        # Mappa delle descrizioni per ogni metrica
+        descriptions = {
+            "dispersion": {
+                "geo_distance_variance": "Variance in the geographic locations of contributors, indicating global distribution.",
+                "avg_geo_distance": "Average geographic distance between contributors, in kilometers.",
+                "cultural_distance_variance": "Variance in cultural values among contributors based on national culture metrics."
+            },
+            "engagement": {
+                "m_comment_per_pr": "Mean number of comments per pull request.",
+                "mm_comment_dist": "Median monthly number of comments per member.",
+                "m_watchers": "Mean number of watchers, indicating general interest in the repository.",
+                "m_stargazers": "Mean number of stargazers, showing popularity or appreciation.",
+                "m_active": "Number of active members (committed in last 30 days).",
+                "mm_commit_dist": "Median number of commits per member per month.",
+                "mm_filecollab_dist": "Median number of collaborators per file per month."
+            },
+            "formality": {
+                "m_membership_type": "Average member role score (e.g., contributor = 1, collaborator = 2).",
+                "milestones": "Total number of milestones set in the project.",
+                "lifetime": "Project age in days from first to last commit."
+            },
+            "longevity": {
+                "longevity": "Average number of days active contributors have been part of the project."
+            },
+            "structure": {
+                "repo_connections": "Indicates if contributors work together on the same repositories.",
+                "follow_connections": "Indicates if contributors follow each other on GitHub.",
+                "pr_connections": "Indicates if contributors interact through pull request comments."
+            }
+        }
+
+        def wrap_metrics(section: str, metrics_dict: dict) -> dict:
+            wrapped = {}
+            for k, v in metrics_dict.items():
+                wrapped[k] = {
+                    "value": v,
+                    "description": descriptions.get(section, {}).get(k, "")
+                }
+            return wrapped
+
+        return {
+            "dispersion": wrap_metrics("dispersion", raw_metrics.get("dispersion", {})),
+            "engagement": wrap_metrics("engagement", raw_metrics.get("engagement", {})),
+            "formality": wrap_metrics("formality", raw_metrics.get("formality", {})),
+            "longevity": wrap_metrics("longevity", {"longevity": raw_metrics.get("longevity")}),
+            "structure": wrap_metrics("structure", raw_metrics.get("structure", {}))
+        }
+
     except Exception as e:
         return {"error": f"Errore lettura metrics.json: {str(e)}"}
 
@@ -217,6 +266,18 @@ def run_analysis(self, author: str, repository: str, end_date: str):
             "metrics": read_metrics(metrics_path),
             "graph": read_all_graphs(author, repository)
         }
+
+        if not results["patterns"] or "error" in results["metrics"] or not results["metrics"] or "error" in results["graph"] or not results["graph"]:
+            clean_up(job_id, author, repository)
+            return {
+                "job_id": job_id,
+                "status": "FAILED",
+                "author": author,
+                "repository": repository,
+                "start_date": start_date,
+                "end_date": end_date,
+                "error": "An Error Occurred during the analysis... Please try again later!"
+            }
 
         final_result = {
             "job_id": job_id,
