@@ -165,7 +165,7 @@ def read_all_graphs(author: str, repository: str) -> dict:
     }
 
 # === TASK Celery ===
-@app.task(bind=True)
+@app.task(bind=True, name="app.tasks.run_analysis")
 def run_analysis(self, author: str, repository: str, end_date: str):
     job_id = str(uuid.uuid4())
     start_date = calculate_start_date(end_date)
@@ -194,6 +194,7 @@ def run_analysis(self, author: str, repository: str, end_date: str):
 
         combined_output = result.stdout + "\n" + result.stderr
         detected_error = detect_toad_failure(combined_output)
+        print(combined_output)
 
         # Analisi fallita
         if detected_error:
