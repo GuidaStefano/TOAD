@@ -231,10 +231,13 @@ def run_analysis(self, author: str, repository: str, end_date: str):
     job_dir = prepare_job_directory(job_id, author, repository, end_date)
     stdin_path = job_dir / "toad_stdin.txt"
 
+    script_path = os.path.join(os.path.dirname(__file__), "..", "pattern_detection.py")
+    script_path = os.path.abspath(script_path)
+
     try:
         # Avvia TOAD come subprocess simulando input da tastiera
         result = subprocess.run(
-            [sys.executable, "pattern_detection.py"],
+            [sys.executable, script_path],
             stdin=open(stdin_path),
             capture_output=True,
             text=True,
